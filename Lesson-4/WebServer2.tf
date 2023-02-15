@@ -49,5 +49,4 @@ resource "aws_security_group" "my_test_webserver" {
     name = "WebServer Security Group"
     Owner ="PavelS"
 }
-
 }

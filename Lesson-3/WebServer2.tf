@@ -7,7 +7,7 @@ provider "aws" {
 resource "aws_instance" "my_test_webserver" {
     ami                     = "ami-07dc21c599e19c4b7"
     instance_type           = "t4g.small"
-    vpc_security_group_ids  = [aws_security_group.my_test_weserver.id]
+    vpc_security_group_ids  = [aws_security_group.my_test_webserver.id]
     user_data = file("user_data.sh")
 
 tags = {
@@ -17,7 +17,7 @@ tags = {
 }
 
 
-resource "aws_security_group" "my_test_weserver" {
+resource "aws_security_group" "my_test_webserver" {
   name      = "WebServer Security Group"
   description = "mytestwebserver security group"
 
