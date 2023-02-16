@@ -12,4 +12,5 @@ output "mywebserver_sg_id" {
 
 output "mywebserver_sg_arn" {
     value       = aws_security_group.my_test_webserver.arn
+    description = "This is description of Amazon Resource Name (ARN) of Security Group"
   }  
