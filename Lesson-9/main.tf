@@ -17,7 +17,7 @@ resource "aws_subnet" "prod_subnet_1" {
     availability_zone = data.aws_availability_zones.working.names[1]
     cidr_block = "10.10.1.0/24"
     tags = {
-        Name = "Subnet-1 in ${data.aws_availability_zones.working.names[1]}"
+        Name = "Subnet-1 in the ${data.aws_availability_zones.working.names[1]}"
         Account = "Subnet in my Account ${data.aws_caller_identity.current.account_id}"
         Region = data.aws_region.current.description
     }
@@ -28,7 +28,7 @@ resource "aws_subnet" "prod_subnet_2" {
     availability_zone = data.aws_availability_zones.working.names[2]
     cidr_block = "10.10.2.0/24"
     tags = {
-        Name = "Subnet-2 in ${data.aws_availability_zones.working.names[2]}"
+        Name = "Subnet-2 in the ${data.aws_availability_zones.working.names[2]}"
         Account = "Subnet in my Account ${data.aws_caller_identity.current.account_id}"
         Region = data.aws_region.current.description
     }
