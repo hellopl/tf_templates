@@ -31,3 +31,8 @@ Lesson-3/.terraform.lock.hcl
 .gitignore
 Lesson-5/.terraform.lock.hcl
 Lesson-4/.terraform.lock.hcl
+Lesson-6/.terraform.lock.hcl
+.gitignore
+Lesson-8/.terraform.lock.hcl
+Lesson-9/.terraform.lock.hcl
+Lesson-7/.terraform.lock.hcl
