@@ -107,11 +107,11 @@ resource "aws_elb "web" {
         instance_protocol = "http"
     }
     health_check {
-        healthy_treshold =
-        unhealthy_treshold =
-        timeout =
-        target =
-        interval =
+        healthy_treshold    = 2
+        unhealthy_treshold  = 2
+        timeout             = 3
+        target              = "HTTP:80/"
+        interval            = 10
         
 
     }
