@@ -67,4 +67,43 @@ resource "aws_launch_configuration" "web" {
 }
 
 
-resource "aws_autoscaling_group
+resource "aws_autoscaling_group "web" {
+    name                        = "WebServer-Highly-Available_ASG"
+    aws_launch_configuration    = aws_launch_configuration.web.name
+    min_size                    = 2 
+    max_size                    = 2
+    min_elb_capacity            = 2
+    health_check_type = "ELB"
+    vpc_zone_identifier = [] !!!!!!!!!!!!
+    load_balancers = [] ```````````
+
+        dynamic "tag" {
+            for_each = {
+                Name    = "WebServer in ASG"
+                Owner   = "Pavel Sevko"
+                TAGKEY  = "TAGVALUE"
+            }
+        content {
+            key                 = tag.key
+            value               = tag.value
+            propagate_at_launch = true
+          }
+        }
+
+        lifecycle {
+            create_before_destroy = true
+        }
+}
+
+
+resource "aws_elb "web" {
+    name                = "WebServer-HA-ELB"
+    availability_zones  = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1]]
+    security_groups     = [aws_security_group.web.id]
+    listener {
+        lb_port         = 80
+        lb_protocol     = "http"
+        instance_port   = 80
+        instance_protocol = "http"
+    }
+}
