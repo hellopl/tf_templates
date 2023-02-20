@@ -112,8 +112,8 @@ resource "aws_elb "web" {
         timeout             = 3
         target              = "HTTP:80/"
         interval            = 10
-        
-
     }
-
+    tags    = {
+        Name = "WebServer-Highly-Available-ELB"
+    }
 }
