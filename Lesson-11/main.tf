@@ -106,4 +106,14 @@ resource "aws_elb "web" {
         instance_port   = 80
         instance_protocol = "http"
     }
+    health_check {
+        healthy_treshold =
+        unhealthy_treshold =
+        timeout =
+        target =
+        interval =
+        
+
+    }
+
 }
