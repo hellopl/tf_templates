@@ -21,7 +21,7 @@ data "aws_ami" "latest_amazon_linux2" {
     most_recent = true
     filter {
         name        = "name"
-        values      = ["amazon/amzn2-ami-kernel-5.10-hvm-*-arm64-gp2"]
+        values      = ["amzn2-ami-hvm-*-x86_64-gp2"]
     }
 }
 
@@ -59,8 +59,8 @@ resource "aws_security_group" "web" {
 
 resource "aws_launch_configuration" "web" {
     // name                = "WebServer-Highly-Available"
-    name_prefix         = "WebServer-Highly-Available-LC"
-    image_id            = data.aws_ami.latest_amazon_linux2.id
+    name_prefix         = "WebServer-Highly-Available-LC-"
+    image_id            = data.aws_ami.latest_amazon_linux.id
     instance_type       = "t4g.small"
     security_groups     = [aws_security_group.web.id]
     user_data           = file("user_data.sh")
