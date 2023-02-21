@@ -5,13 +5,15 @@
 #    - Launch Configuration with Auto AMI Lookup
 #    - Auto Scaling Group using 2 Availability Zones
 #    - Classic Load Balancer in 2 Availability Zones
-#
+# Credit Denis Astahov
 # Edited by Pavel Sevko 18-February-2023
 #-----------------------------------------------------------
 
 provider "aws" {
     region = "eu-north-1"
 }
+
+resource "aws_default_vpc" "default" {}
 
 data "aws_availability_zones" "available" {}
 data "aws_ami" "latest_amazon_linux2" {
@@ -27,8 +29,9 @@ data "aws_ami" "latest_amazon_linux2" {
 
 resource "aws_security_group" "web" {
     name      = "Dynamic Security Group"
+    vpc_id = aws_default_vpc.default.id
 
- # This dynamic block creates ingress rules for each port specified in the list
+
     dynamic "ingress" {
         for_each = ["80", "443"]
         content {
@@ -38,14 +41,14 @@ resource "aws_security_group" "web" {
             cidr_blocks     = ["0.0.0.0/0"]
         }
     }
-    # This block creates an egress rule that allows all traffic to all destinations
+
     egress {
         from_port       = 0
         to_port         = 0
         protocol        = "-1"
         cidr_blocks     = ["0.0.0.0/0"]
     }
-    # These tags help identify the resource
+
     tags = {
         name = "Dynamic Security Group"
         Owner ="Pavel Sevko"
@@ -55,9 +58,10 @@ resource "aws_security_group" "web" {
 #-----------------------------------------------------------
 
 resource "aws_launch_configuration" "web" {
-    name                =   "WebServer-Highly-Available"
+    // name                = "WebServer-Highly-Available"
+    name_prefix         = "WebServer-Highly-Available-LC"
     image_id            = data.aws_ami.latest_amazon_linux2.id
-    instance_type       = t4g.small
+    instance_type       = "t4g.small"
     security_groups     = [aws_security_group.web.id]
     user_data           = file("user_data.sh")
 
@@ -68,31 +72,31 @@ resource "aws_launch_configuration" "web" {
 
 
 resource "aws_autoscaling_group "web" {
-    name                        = "WebServer-Highly-Available_ASG"
-    aws_launch_configuration    = aws_launch_configuration.web.name
+    name                        = "ASG-${aws_launch_configuration.web.name}"
+    launch_configuration        = aws_launch_configuration.web.name
     min_size                    = 2 
     max_size                    = 2
     min_elb_capacity            = 2
-    health_check_type = "ELB"
-    vpc_zone_identifier = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id] !!!!!!!!!!!!
-    load_balancers = [aws_elb.web.name] ```````````
+    health_check_type           = "ELB"
+    vpc_zone_identifier         = [aws_default_subnet.default_az1.id, aws_default_subnet.default_az2.id]
+    load_balancers              = [aws_elb.web.name]
 
-        dynamic "tag" {
-            for_each = {
-                Name    = "WebServer in ASG"
-                Owner   = "Pavel Sevko"
-                TAGKEY  = "TAGVALUE"
-            }
+    dynamic "tag" {
+        for_each = {
+            Name    = "WebServer in ASG"
+            Owner   = "Pavel Sevko"
+            TAGKEY  = "TAGVALUE"
+        }
         content {
             key                 = tag.key
             value               = tag.value
             propagate_at_launch = true
-          }
         }
+    }
 
-        lifecycle {
-            create_before_destroy = true
-        }
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 
@@ -101,10 +105,10 @@ resource "aws_elb "web" {
     availability_zones  = [data.aws_availability_zones.available.names[0], data.aws_availability_zones.available.names[1]]
     security_groups     = [aws_security_group.web.id]
     listener {
-        lb_port         = 80
-        lb_protocol     = "http"
-        instance_port   = 80
-        instance_protocol = "http"
+        lb_port             = 80
+        lb_protocol         = "http"
+        instance_port       = 80
+        instance_protocol   = "http"
     }
     health_check {
         healthy_treshold    = 2
@@ -129,6 +133,6 @@ resource "aws_default_subnet" "default_az2" {
 
 #-------------------------------------------------------------------------------------------
 
-output "web_loadbalaner_url" {
+output "web_loadbalancer_url" {
     value = aws_elb.web.dns_name
 }
