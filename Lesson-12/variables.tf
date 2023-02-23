@@ -14,6 +14,9 @@ variable "allow_ports" {
     description = "List of default open ports on Server"
     type = list
     default = ["80", "443", "22", "8080"]
+}
 
-
+variable "enable_detailed_monitoring" {
+    type = bool
+    default = "false"
 }

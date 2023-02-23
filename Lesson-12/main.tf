@@ -28,6 +28,7 @@ resource "aws_instance" "my_server" {
     ami                     = data.aws_ami.latest_amilinux.id
     instance_type           = var.instance_type
     vpc_security_group_ids  = [aws_security_group.my_server.id]
+    monitoring              = var.enable_detailed_monitoring
   
       tags = {
       name = "Server Build by Terraform"
