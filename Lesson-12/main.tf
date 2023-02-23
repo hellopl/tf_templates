@@ -14,14 +14,18 @@ data "aws_ami" "latest_amilinux" {
 
 
 resource "aws_eip" "my_static_ip" {
-  instance = aws_instance.my_server.id
+  instance  = aws_instance.my_server.id
+  #tags      = var.common_tags
+  tags      = merge(var.common_tags, { Name = "${var.common_tags["Environment"]} Server Elastic IP"})
+/*  
   tags = {
       name = "Server Elastic IP"
       Owner ="PavelS"
       Project = "T1000"
       Region = var.region
-  }
+  }*/
 }
+
 
 
 resource "aws_instance" "my_server" {
@@ -29,12 +33,7 @@ resource "aws_instance" "my_server" {
     instance_type           = var.instance_type
     vpc_security_group_ids  = [aws_security_group.my_server.id]
     monitoring              = var.enable_detailed_monitoring
-  
-      tags = {
-      name = "Server Build by Terraform"
-      Owner ="PavelS"
-      Project = "T1000"
-    }
+      tags                  = merge(var.common_tags, { Name = "${var.common_tags["Environment"]} Server "})
 }
 
 
@@ -58,8 +57,5 @@ resource "aws_security_group" "my_server" {
         cidr_blocks     = ["0.0.0.0/0"]
     }
 
-    tags = {
-        name = "Web Server SecurityGroup"
-        Owner ="Pavel Sevko"
-    }
+    tags                  = merge(var.common_tags, { Name = "${var.common_tags["Environment"]} Server SecurityGroup"})
 }
