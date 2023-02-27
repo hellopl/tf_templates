@@ -1,3 +1,6 @@
+# credit - Denis Astahov
+# edited - Pavel Sevko
+
 provider "aws" {
     region = var.region   
 }
