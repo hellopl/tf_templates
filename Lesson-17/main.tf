@@ -10,9 +10,17 @@ provider "aws" {
 
 
 variable "env" {
-    default = "dev"
+    default = "test"
 }
 
+variable "owner" {
+    default = {
+        "prod_owner"        ="Pavel Sevko"
+        "nonprod_owner"     ="Mister Bob"
+    }
+}
+
+/*
 variable "prod_owner" {
     default = "Pavel Sevko"
 }
@@ -20,6 +28,7 @@ variable "prod_owner" {
 variable "noprod_owner" {
     default = "Mister Bob"
 }
+*/
 
 variable "ec2_size" {
     default = {
@@ -43,7 +52,7 @@ resource "aws_instance" "my_web_server1" {
     instance_type = var.env == "prod" ? var.ec2_size["prod"] : var.ec2_size["test"]    
     tags = {
         Name    = "${var.env} - server"
-        Owner   = var.env == "prod" ? var.prod_owner : var.noprod_owner
+        Owner   = var.env == "prod" ? var.owner["prod_owner"] : var.owner["nonprod_owner"]
     }
 }
 
@@ -54,7 +63,7 @@ resource "aws_instance" "my_web_server2" {
     
     tags = {
         Name    = "${var.env} - server"
-        Owner   = var.env == "prod" ? var.prod_owner : var.noprod_owner
+        Owner   = var.env == "prod" ? var.owner["prod_owner"] : var.owner["nonprod_owner"]
     }
 }
 
