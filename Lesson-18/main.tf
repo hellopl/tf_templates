@@ -50,15 +50,12 @@ output "created_iam_users_map" {
 
 // print in outputs list of users with EXACT 5 characters name
 output "custom_if_length" {
-    value = {
-        for x in aws_iam_user.users :
+    value = [
+        for x in aws_iam_user.users:
         x.name
         if length(x.name) == 5
-    }
+    ]
 }
-
-
-
 
 resource "aws_instance" "servers" {
     count = 3
@@ -66,5 +63,13 @@ resource "aws_instance" "servers" {
     instance_type = "t4g.small"
     tags = {
         Name = "Server Number - ${count.index + 1}"
+    }
+}
+
+// print in outputs map of servers with server ID and public IP address
+output "server_all" {
+    value = {
+        for server in aws_instance.servers:
+        server.id => server.public_ip
     }
 }
