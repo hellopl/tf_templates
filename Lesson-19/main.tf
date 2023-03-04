@@ -7,11 +7,14 @@
 provider "aws" {
     region = "eu-north-1"
 
+/*
     assume_role {
         role_arn = "arn:aws:iam::12333312312:role/RemoteAdministrators"
         session_name = "skynet_session"
     }
 }
+*/
+
 
 provider "aws" {
     region = "eu-west-1"
